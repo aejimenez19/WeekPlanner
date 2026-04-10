@@ -1,6 +1,7 @@
 package com.aejimenezdev.taskService.service;
 
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
+import com.aejimenezdev.taskService.dto.UpdateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
 import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.model.Task;
@@ -69,5 +70,42 @@ public class TaskService {
                         .userId(task.getUserId())
                         .build())
                 .toList();
+    }
+
+    public TaskResponse updateTask(Long taskId, Long userId, UpdateTaskRequest request) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+
+        if (!task.getUserId().equals(userId)) {
+            throw new SecurityException("No tienes permiso para actualizar esta tarea");
+        }
+
+        if (request.getTitle() != null) {
+            task.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            task.setDescription(request.getDescription());
+        }
+        if (request.getDayOfWeek() != null) {
+            task.setDayOfWeek(request.getDayOfWeek());
+        }
+        if (request.getTime() != null) {
+            task.setTime(request.getTime());
+        }
+        if (request.getCompleted() != null) {
+            task.setCompleted(request.getCompleted());
+        }
+
+        Task updatedTask = taskRepository.save(task);
+
+        return TaskResponse.builder()
+                .id(updatedTask.getId())
+                .title(updatedTask.getTitle())
+                .description(updatedTask.getDescription())
+                .dayOfWeek(updatedTask.getDayOfWeek())
+                .time(updatedTask.getTime())
+                .completed(updatedTask.getCompleted())
+                .userId(updatedTask.getUserId())
+                .build();
     }
 }

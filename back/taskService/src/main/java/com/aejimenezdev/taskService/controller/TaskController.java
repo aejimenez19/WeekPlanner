@@ -2,6 +2,7 @@ package com.aejimenezdev.taskService.controller;
 
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
+import com.aejimenezdev.taskService.dto.UpdateTaskRequest;
 import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.service.TaskService;
 import jakarta.validation.Valid;
@@ -36,5 +37,15 @@ public class TaskController {
         
         TaskResponse response = taskService.createTask(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponse> updateTask(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTaskRequest request) {
+        
+        TaskResponse response = taskService.updateTask(id, userId, request);
+        return ResponseEntity.ok(response);
     }
 }
