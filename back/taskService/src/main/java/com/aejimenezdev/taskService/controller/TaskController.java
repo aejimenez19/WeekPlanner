@@ -2,6 +2,7 @@ package com.aejimenezdev.taskService.controller;
 
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
+import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +10,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
+
+    @GetMapping
+    public ResponseEntity<List<TaskResponse>> getTasks(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false) DayOfWeek day) {
+        
+        List<TaskResponse> tasks = taskService.getTasks(userId, completed, day);
+        return ResponseEntity.ok(tasks);
+    }
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(

@@ -2,11 +2,14 @@ package com.aejimenezdev.taskService.service;
 
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
+import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.model.Task;
 import com.aejimenezdev.taskService.repository.TaskRepository;
 import com.aejimenezdev.taskService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +43,31 @@ public class TaskService {
                 .completed(savedTask.getCompleted())
                 .userId(savedTask.getUserId())
                 .build();
+    }
+
+    public List<TaskResponse> getTasks(Long userId, Boolean completed, DayOfWeek dayOfWeek) {
+        List<Task> tasks;
+
+        if (completed != null && dayOfWeek != null) {
+            tasks = taskRepository.findByUserIdAndCompletedAndDayOfWeek(userId, completed, dayOfWeek);
+        } else if (completed != null) {
+            tasks = taskRepository.findByUserIdAndCompleted(userId, completed);
+        } else if (dayOfWeek != null) {
+            tasks = taskRepository.findByUserIdAndDayOfWeek(userId, dayOfWeek);
+        } else {
+            tasks = taskRepository.findByUserId(userId);
+        }
+
+        return tasks.stream()
+                .map(task -> TaskResponse.builder()
+                        .id(task.getId())
+                        .title(task.getTitle())
+                        .description(task.getDescription())
+                        .dayOfWeek(task.getDayOfWeek())
+                        .time(task.getTime())
+                        .completed(task.getCompleted())
+                        .userId(task.getUserId())
+                        .build())
+                .toList();
     }
 }
