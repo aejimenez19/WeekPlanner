@@ -108,4 +108,15 @@ public class TaskService {
                 .userId(updatedTask.getUserId())
                 .build();
     }
+
+    public void deleteTask(Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+
+        if (!task.getUserId().equals(userId)) {
+            throw new SecurityException("No tienes permiso para eliminar esta tarea");
+        }
+
+        taskRepository.delete(task);
+    }
 }
