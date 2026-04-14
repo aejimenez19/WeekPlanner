@@ -8,10 +8,12 @@ import com.aejimenezdev.taskService.model.Task;
 import com.aejimenezdev.taskService.repository.TaskRepository;
 import com.aejimenezdev.taskService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -20,7 +22,10 @@ public class TaskService {
     private final UserRepository userRepository;
 
     public TaskResponse createTask(CreateTaskRequest request, Long userId) {
+        log.info("[TaskService] Creando tarea para usuario ID: {} - Título: {}", userId, request.getTitle());
+        
         if (!userRepository.existsById(userId)) {
+            log.warn("[TaskService] Usuario no encontrado ID: {}", userId);
             throw new RuntimeException("Usuario no encontrado");
         }
 
@@ -34,6 +39,8 @@ public class TaskService {
                 .build();
 
         Task savedTask = taskRepository.save(task);
+        
+        log.info("[TaskService] Tarea creada ID: {} para usuario ID: {}", savedTask.getId(), userId);
 
         return TaskResponse.builder()
                 .id(savedTask.getId())
@@ -47,6 +54,9 @@ public class TaskService {
     }
 
     public List<TaskResponse> getTasks(Long userId, Boolean completed, DayOfWeek dayOfWeek) {
+        log.info("[TaskService] Obteniendo tareas - Usuario ID: {}, Día: {}, Completado: {}", 
+                userId, dayOfWeek, completed);
+        
         List<Task> tasks;
 
         if (completed != null && dayOfWeek != null) {
@@ -59,6 +69,8 @@ public class TaskService {
             tasks = taskRepository.findByUserId(userId);
         }
 
+        log.info("[TaskService] Se encontraron {} tareas para usuario ID: {}", tasks.size(), userId);
+        
         return tasks.stream()
                 .map(task -> TaskResponse.builder()
                         .id(task.getId())
@@ -73,10 +85,16 @@ public class TaskService {
     }
 
     public TaskResponse updateTask(Long taskId, Long userId, UpdateTaskRequest request) {
+        log.info("[TaskService] Actualizando tarea ID: {} para usuario ID: {}", taskId, userId);
+        
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+                .orElseThrow(() -> {
+                    log.warn("[TaskService] Tarea no encontrada ID: {}", taskId);
+                    return new RuntimeException("Tarea no encontrada");
+                });
 
         if (!task.getUserId().equals(userId)) {
+            log.warn("[TaskService] Permiso denegado - usuario {} intentó actualizar tarea {}", userId, taskId);
             throw new SecurityException("No tienes permiso para actualizar esta tarea");
         }
 
@@ -97,6 +115,8 @@ public class TaskService {
         }
 
         Task updatedTask = taskRepository.save(task);
+        
+        log.info("[TaskService] Tarea ID: {} actualizada exitosamente", taskId);
 
         return TaskResponse.builder()
                 .id(updatedTask.getId())
@@ -110,13 +130,21 @@ public class TaskService {
     }
 
     public void deleteTask(Long taskId, Long userId) {
+        log.info("[TaskService] Eliminando tarea ID: {} para usuario ID: {}", taskId, userId);
+        
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+                .orElseThrow(() -> {
+                    log.warn("[TaskService] Tarea no encontrada ID: {}", taskId);
+                    return new RuntimeException("Tarea no encontrada");
+                });
 
         if (!task.getUserId().equals(userId)) {
+            log.warn("[TaskService] Permiso denegado - usuario {} intentó eliminar tarea {}", userId, taskId);
             throw new SecurityException("No tienes permiso para eliminar esta tarea");
         }
 
         taskRepository.delete(task);
+        
+        log.info("[TaskService] Tarea ID: {} eliminada exitosamente", taskId);
     }
 }

@@ -7,12 +7,14 @@ import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class TaskController {
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) DayOfWeek day) {
         
+        log.info("[TaskController] GET /api/tasks - Usuario: {}, day: {}, completed: {}", userId, day, completed);
         List<TaskResponse> tasks = taskService.getTasks(userId, completed, day);
         return ResponseEntity.ok(tasks);
     }
@@ -35,6 +38,7 @@ public class TaskController {
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody CreateTaskRequest request) {
         
+        log.info("[TaskController] POST /api/tasks - Usuario: {}, Título: {}", userId, request.getTitle());
         TaskResponse response = taskService.createTask(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -45,6 +49,7 @@ public class TaskController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateTaskRequest request) {
         
+        log.info("[TaskController] PUT /api/tasks/{} - Usuario: {}", id, userId);
         TaskResponse response = taskService.updateTask(id, userId, request);
         return ResponseEntity.ok(response);
     }
@@ -54,6 +59,7 @@ public class TaskController {
             @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long id) {
         
+        log.info("[TaskController] DELETE /api/tasks/{} - Usuario: {}", id, userId);
         taskService.deleteTask(id, userId);
         return ResponseEntity.noContent().build();
     }
