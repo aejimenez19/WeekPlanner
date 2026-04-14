@@ -1,0 +1,57 @@
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: planning-db
+    environment:
+      POSTGRES_DB: planning_db
+      POSTGRES_USER: aejimenez
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  auth-service:
+    build:
+      context: ./back/authService
+    container_name: planning-auth
+    expose:
+      - "8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/planning_db
+      SPRING_DATASOURCE_USERNAME: aejimenez
+      SPRING_DATASOURCE_PASSWORD: password
+      JWT_SECRET: EstaEsUnaClaveSecretaParaJWTQueEsMuyLarga123
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      - postgres
+
+  task-service:
+    build:
+      context: ./back/taskService
+    container_name: planning-tasks
+    expose:
+      - "8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/planning_db
+      SPRING_DATASOURCE_USERNAME: aejimenez
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - postgres
+
+  gateway:
+    build:
+      context: ./back/gatewayservice
+    container_name: planning-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET: EstaEsUnaClaveSecretaParaJWTQueEsMuyLarga123
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      - auth-service
+      - task-service
+
+volumes:
+  postgres_data:
