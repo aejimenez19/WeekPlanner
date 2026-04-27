@@ -6,8 +6,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   imports: [RouterLink, FormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css'
+  templateUrl: './register.html'
 })
 export class RegisterPage {
   private authService = inject(AuthService);
@@ -16,9 +15,14 @@ export class RegisterPage {
   email = signal('');
   password = signal('');
   fullName = signal('');
+  showPassword = signal(false);
 
   isLoading = signal(false);
   error = signal<string | null>(null);
+
+  togglePassword() {
+    this.showPassword.update(v => !v);
+  }
 
   onSubmit() {
     this.error.set(null);
