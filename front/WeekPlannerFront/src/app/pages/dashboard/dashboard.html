@@ -1,0 +1,167 @@
+<!-- Desktop Sidebar Navigation -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low p-6 space-y-8 z-50">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+      <span class="material-symbols-outlined">menu_book</span>
+    </div>
+    <div>
+      <h1 class="text-lg font-extrabold text-primary leading-none">WeekPlanner</h1>
+      <p class="text-xs text-on-tertiary-fixed-variant mt-1">The Digital Curator</p>
+    </div>
+  </div>
+  
+  <nav class="flex-1 space-y-2">
+    <a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-container-high rounded-xl transition-all" href="javascript:void(0)">
+      <span class="material-symbols-outlined">inbox</span>
+      <span>Inbox</span>
+    </a>
+  </nav>
+
+  <div class="pt-6 space-y-2 border-t border-outline-variant/10">
+    <a class="flex items-center gap-3 px-4 py-2 text-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer" (click)="logout()">
+      <span class="material-symbols-outlined text-base">logout</span>
+      <span>Sign Out</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Mobile Top Bar -->
+<header class="md:hidden sticky top-0 flex justify-between items-center px-6 h-16 w-full bg-surface-container-low z-40">
+  <h1 class="text-xl font-bold tracking-tighter text-primary">WeekPlanner</h1>
+  <div class="flex items-center gap-4">
+    <span class="material-symbols-outlined text-on-surface-variant">calendar_today</span>
+    <div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+      <img class="w-full h-full object-cover" alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr3-WS3Ks_Of9o_V2x7K32nl515NttTDHNbuV1HY1hj5ZnHoDX1MNm26vOIvWdQZGxhYKdVb7eYtxeMnGgpScyEW2VPlqbqPnClwpPjxl1d2DUOvg9VRWsKhf3qOUcdrGY2JfWmfrlKIHhfOYcZqOOuMdWd0-w4aj8kaJN5GW0CVCl7BEN4F8w0_zkKydHmWzo2qtHPV_WZMYgMlejl2sFXpboMjq_DNdH2mTMKWsD2os03HVW8YfYEtt5s4TAZ5DpL0ymdUrYJVxD"/>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen px-6 py-12 md:px-16 md:py-20 max-w-6xl mx-auto">
+  <!-- Editorial Header -->
+  <header class="mb-16 md:ml-10">
+    <h2 class="text-4xl md:text-6xl font-extrabold tracking-tighter text-on-background mb-4">Inbox</h2>
+    <p class="text-lg text-on-surface-variant max-w-md font-medium leading-relaxed">
+      Capture your thoughts, clear your mind. These entries are waiting for your curation.
+    </p>
+  </header>
+
+  <div class="flex flex-col lg:flex-row gap-12">
+    <!-- Left Column: Pending Tasks -->
+    <div class="flex-1">
+      <div class="flex items-center justify-between mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">Pending Tasks</h3>
+        <span class="text-xs bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-bold">{{ getPendingCount() }} Items</span>
+      </div>
+
+      @if (error()) {
+        <div class="bg-error-container text-error px-4 py-3 rounded-xl text-body-sm mb-6">
+          {{ error() }}
+        </div>
+      }
+
+      @if (isLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <span class="material-symbols-outlined text-primary animate-spin">sync</span>
+        </div>
+      } @else if (getPendingTasks().length === 0) {
+        <!-- Empty State -->
+        <div class="mt-20 p-10 rounded-[2rem] bg-gradient-to-br from-primary-container/30 to-tertiary-container/30 flex flex-col items-center text-center">
+          <span class="material-symbols-outlined text-primary text-4xl mb-4">spa</span>
+          <p class="text-on-primary-container font-headline font-bold text-xl italic mb-2">"Simplicity is the ultimate sophistication."</p>
+          <p class="text-on-tertiary-fixed-variant text-sm">Leonardo da Vinci</p>
+        </div>
+      } @else {
+        <!-- Task List -->
+        <div class="space-y-6">
+          @for (task of getPendingTasks(); track task.id) {
+            <div 
+              class="group flex items-start gap-5 p-6 bg-surface-container-lowest rounded-xl hover:bg-white transition-all shadow-sm cursor-pointer"
+              (click)="toggleComplete(task.id)"
+            >
+              <div class="mt-1">
+                <div class="w-6 h-6 rounded-lg border-2 border-outline-variant/30 flex items-center justify-center group-hover:border-primary transition-colors">
+                  <span class="material-symbols-outlined text-sm text-primary opacity-0 group-hover:opacity-100">check</span>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-lg font-semibold text-on-surface leading-tight">{{ task.title }}</h4>
+                <div class="mt-2 flex gap-3">
+                  <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">schedule</span> {{ task.dayOfWeek }}
+                  </span>
+                  @if (task.time) {
+                    <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
+                      <span class="material-symbols-outlined text-xs">access_time</span> {{ task.time }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Right Column: Context/Stats -->
+    <div class="lg:w-80 space-y-6">
+      <!-- New Task Button (placeholder) -->
+      <button class="w-full bg-primary text-on-primary py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:scale-[0.98] transition-all duration-200" disabled>
+        <span class="material-symbols-outlined">add</span>
+        <span>New Task</span>
+      </button>
+
+      <!-- Inbox Health Card -->
+      <div class="bg-surface-container-low p-6 rounded-[2rem]">
+        <h4 class="font-bold text-on-surface mb-4">Inbox Health</h4>
+        <div class="space-y-4">
+          <div class="flex justify-between items-end">
+            <span class="text-sm text-on-surface-variant">Completion Rate</span>
+            <span class="text-2xl font-extrabold text-primary">{{ completionRate }}%</span>
+          </div>
+          <div class="w-full bg-outline-variant/20 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-primary h-full" [style.width.%]="completionRate"></div>
+          </div>
+          <p class="text-xs text-on-tertiary-fixed-variant leading-relaxed">
+            @if (completionRate >= 50) {
+              You're doing great! Keep the momentum.
+            } @else {
+              Start completing tasks to build your momentum.
+            }
+          </p>
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      <div class="rounded-[2rem] overflow-hidden h-64 relative group">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Minimalist desk setup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeKq5LvmY-T6SNTNtMZifMqji0uZNZMK2msKScvGJITJ7N-4jzzp7bPuYyyAd1a3603RDWvDIE4NLUSoX072-viduReleJ3LAR_2t4okJHH9UW0LY8p759Hltzh48ZcHOYiYiB4PXe3eeA488yzjo3IZQREgdYZ1DahCbsMegSF8W3L5LwVi4OFPYvZjeRip-V8BQYivj_AThmUDPEBPJorafx9-MXE3W7fOlId1Li4dJ8y6FimD_xmscRI9PtA3dW01U6ZRfIGk5o"/>
+        <div class="absolute inset-0 bg-black/10 flex items-end p-6">
+          <p class="text-white text-xs font-bold tracking-widest uppercase">Weekly Focus: Clarity</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Mobile Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-dim h-20 flex items-center justify-around px-4 z-50">
+  <a class="flex flex-col items-center gap-1 text-primary" href="javascript:void(0)">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inbox</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Inbox</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="javascript:void(0)">
+    <span class="material-symbols-outlined">event_repeat</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Plan</span>
+  </a>
+  <div class="-mt-12 bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
+    <span class="material-symbols-outlined text-2xl">add</span>
+  </div>
+  <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="javascript:void(0)">
+    <span class="material-symbols-outlined">view_week</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Week</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="javascript:void(0)">
+    <span class="material-symbols-outlined">folder_open</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Files</span>
+  </a>
+</nav>
