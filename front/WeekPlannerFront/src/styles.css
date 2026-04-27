@@ -2,6 +2,8 @@
 
 @import 'tailwindcss';
 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
 
 @theme {
   /* Colors from DESIGN.md */
@@ -9,13 +11,51 @@
   --color-surface-container-low: #f3f4f2;
   --color-surface-container-lowest: #ffffff;
   --color-surface-container-high: #e5e9e6;
+  --color-surface-container-highest: #dee4e0;
+  --color-surface-dim: #d4dcd8;
+  --color-surface: #f9f9f7;
+  --color-surface-bright: #f9f9f7;
+  --color-surface-tint: #4f634f;
   --color-primary: #4f634f;
+  --color-primary-dim: #445744;
   --color-primary-container: #d2e9cf;
+  --color-primary-fixed: #d2e9cf;
+  --color-primary-fixed-dim: #c4dac1;
   --color-on-surface: #2e3432;
   --color-on-surface-variant: #5a605e;
+  --color-on-primary: #e7fee4;
+  --color-on-primary-container: #435743;
+  --color-on-primary-fixed: #314432;
+  --color-on-primary-fixed-variant: #4d614d;
+  --color-secondary: #4f6171;
+  --color-secondary-dim: #445564;
+  --color-secondary-container: #d2e5f7;
+  --color-secondary-fixed: #d2e5f7;
+  --color-secondary-fixed-dim: #c4d7e9;
+  --color-on-secondary: #f6f9ff;
+  --color-on-secondary-container: #425463;
+  --color-on-secondary-fixed: #304150;
+  --color-on-secondary-fixed-variant: #4c5d6d;
   --color-tertiary: #506d5a;
-  --color-on-primary: #ffffff;
+  --color-tertiary-dim: #3d5948;
+  --color-tertiary-container: #dbfce4;
+  --color-tertiary-fixed: #dbfce4;
+  --color-tertiary-fixed-dim: #cdedd6;
+  --color-on-tertiary: #e7ffec;
+  --color-on-tertiary-container: #466250;
+  --color-on-tertiary-fixed: #34503f;
+  --color-on-tertiary-fixed-variant: #506d5a;
+  --color-on-background: #2e3432;
+  --color-outline: #767c79;
+  --color-outline-variant: #adb3b0;
   --color-error: #9e422c;
+  --color-error-dim: #5c1202;
+  --color-error-container: #fe8b70;
+  --color-on-error: #fff7f6;
+  --color-on-error-container: #742410;
+  --color-inverse-surface: #0d0f0e;
+  --color-inverse-primary: #e0f7dd;
+  --color-inverse-on-surface: #9c9d9b;
   
   /* Typography */
   --font-family-manrope: 'Manrope', sans-serif;
@@ -32,6 +72,16 @@
   --text-body-sm: 0.875rem;
   --text-label-md: 0.875rem;
   --text-label-sm: 0.75rem;
+}
+
+body {
+  font-family: var(--font-family-manrope);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+}
+
+.editorial-shadow {
+  box-shadow: 0 12px 32px rgba(46, 52, 50, 0.04);
 }
 
 body {

@@ -18,6 +18,7 @@ Weekly planning application with task management organized by days of the week.
 
 ### Frontend
 - **Angular 21**
+- **Tailwind CSS** - Estilos y design system
 - **Manrope** font
 - Custom design system (see DESIGN.md)
 
@@ -153,6 +154,12 @@ docker-compose up -d
 ```
 
 ## 9. Conventions
+
+### Frontend (CSS)
+- **Usar siempre Tailwind CSS** para estilos de componentes
+- Preferir clases de Tailwind sobre CSS custom
+- Usar tokens de color del design system (primary, surface-container-*, etc.)
+- No crear archivos .css separados para componentes - usar Tailwind inline
 
 ### Java
 - Package naming: `com.planning.<service>.<module>`
