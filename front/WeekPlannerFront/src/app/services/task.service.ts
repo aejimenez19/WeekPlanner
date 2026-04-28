@@ -19,6 +19,10 @@ export interface TaskCreateRequest {
   time?: string;
 }
 
+export interface TaskUpdateRequest {
+  completed?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,8 +38,8 @@ export class TaskService {
     );
   }
 
-  toggleComplete(taskId: number): Observable<Task> {
-    return this.http.patch<Task>(`${this.API_URL}/${taskId}/complete`, {}).pipe(
+  toggleComplete(taskId: number, completed: boolean): Observable<Task> {
+    return this.http.put<Task>(`${this.API_URL}/${taskId}`, { completed }).pipe(
       tap(updatedTask => {
         this.tasks.update(tasks => 
           tasks.map(t => t.id === taskId ? updatedTask : t)

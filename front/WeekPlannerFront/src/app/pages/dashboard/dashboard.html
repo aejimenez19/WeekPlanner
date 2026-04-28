@@ -77,7 +77,7 @@
           @for (task of getPendingTasks(); track task.id) {
             <div 
               class="group flex items-start gap-5 p-6 bg-surface-container-lowest rounded-xl hover:bg-white transition-all shadow-sm cursor-pointer"
-              (click)="toggleComplete(task.id)"
+              (click)="toggleComplete(task.id, true)"
             >
               <div class="mt-1">
                 <div class="w-6 h-6 rounded-lg border-2 border-outline-variant/30 flex items-center justify-center group-hover:border-primary transition-colors">

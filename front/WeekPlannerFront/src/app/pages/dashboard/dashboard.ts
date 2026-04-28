@@ -62,8 +62,8 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  toggleComplete(taskId: number) {
-    this.taskService.toggleComplete(taskId).subscribe({
+  toggleComplete(taskId: number, completed: boolean) {
+    this.taskService.toggleComplete(taskId, completed).subscribe({
       error: (err) => {
         this.error.set(err.error?.message || 'Error updating task');
       }
