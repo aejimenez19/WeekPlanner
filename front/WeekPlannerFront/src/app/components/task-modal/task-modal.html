@@ -1,0 +1,132 @@
+<div 
+  class="fixed inset-0 z-50 glass-overlay flex items-center justify-center p-4 md:p-8"
+  [class.hidden]="!isVisible()"
+  (click)="onBackdropClick($event)"
+  (keydown)="onKeydown($event)"
+  tabindex="-1"
+>
+  <div 
+    class="w-full max-w-2xl bg-surface-container-lowest rounded-[2rem] shadow-[0_12_32px_rgba(46,52,50,0.06)] overflow-hidden flex flex-col md:flex-row min-h-[500px] editorial-shadow"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <!-- Side Image/Aesthetic Element -->
+    <div class="hidden md:block w-1/3 relative overflow-hidden">
+      <img 
+        alt="Minimalist desk setup with a single lamp and soft natural light" 
+        class="absolute inset-0 w-full h-full object-cover" 
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCgaCQsagXRMel8eDJa8s1qolltI032h1G0eM51VRyOV5TxA-q0lYRmZMhOzYKPifNIng-72rSjsC6-3qJzmJBORG6F0WW0JfY5OJvGF89Sbonjn6i-9oUIInV_cC1IW-5ibZrp6h2vFjt7i-AF5Qt1nKyV6MDz1VXK8Ijy3uZ9OfDH_hszjzxo6AhOKT8U4gK2GdNdgCQId6n3anaxhPmvE6sKEEWqYOe99xort5pl82UIBcRpA7bA3AZZ9YT6etTFssdQU7OTH-h"
+      />
+      <div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+      <div class="absolute bottom-6 left-6 right-6">
+        <p class="text-on-primary font-medium tracking-tight text-sm leading-relaxed">
+          "Focus on the essential. Eliminate the rest."
+        </p>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 p-8 md:p-12 flex flex-col">
+      <!-- Header Actions -->
+      <div class="flex justify-between items-center mb-10">
+        <div class="flex items-center gap-2 text-on-tertiary-fixed-variant">
+          <span class="material-symbols-outlined text-sm">edit_note</span>
+          <span class="text-xs font-bold tracking-widest uppercase">New Task</span>
+        </div>
+        <button 
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-all text-on-surface-variant cursor-pointer"
+          (click)="hide()"
+          aria-label="Close modal"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      @if (error()) {
+        <div class="bg-error-container text-error px-4 py-3 rounded-xl text-body-sm mb-6">
+          {{ error() }}
+        </div>
+      }
+
+      <!-- Form -->
+      <form class="space-y-8 flex-grow" (ngSubmit)="createTask()">
+        <!-- Title -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-title">TASK TITLE</label>
+          <input 
+            class="w-full bg-transparent text-2xl md:text-3xl font-semibold tracking-tight border-none focus:ring-0 p-0 placeholder:text-surface-container-highest text-on-surface outline-none"
+            id="task-title"
+            type="text"
+            placeholder="What is your focus today?"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            name="title"
+            required
+          />
+        </div>
+
+        <!-- Day of Week -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-day">DAY OF WEEK</label>
+          <div class="relative group">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary opacity-60 group-focus-within:opacity-100">calendar_view_week</span>
+            <select 
+              class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-sm font-medium focus:bg-surface-container-lowest transition-colors appearance-none cursor-pointer outline-none"
+              id="task-day"
+              [ngModel]="dayOfWeek()"
+              (ngModelChange)="dayOfWeek.set($event)"
+              name="dayOfWeek"
+              required
+            >
+              <option value="" disabled>Select a day</option>
+              @for (day of daysOfWeek; track day) {
+                <option [value]="day">{{ day }}</option>
+              }
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-notes">NOTES</label>
+          <textarea 
+            class="w-full bg-surface-container-low border-none rounded-xl p-4 text-sm leading-relaxed focus:bg-surface-container-lowest transition-colors resize-none outline-none placeholder:text-on-surface-variant/40"
+            id="task-notes"
+            placeholder="Deepen your thoughts here..."
+            rows="4"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            name="description"
+          ></textarea>
+        </div>
+      </form>
+
+      <!-- Footer Actions -->
+      <div class="mt-10 flex items-center justify-between">
+        <button 
+          class="flex items-center gap-2 text-error text-sm font-semibold opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
+          (click)="hide()"
+        >
+          <span class="material-symbols-outlined text-lg">delete</span>
+          Discard
+        </button>
+        <div class="flex gap-3">
+          <button 
+            class="px-8 py-3 rounded-full signature-gradient text-on-primary text-sm font-extrabold tracking-tight shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            (click)="createTask()"
+            [disabled]="!isFormValid() || isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              <span class="material-symbols-outlined animate-spin">sync</span>
+            } @else {
+              Save Task
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

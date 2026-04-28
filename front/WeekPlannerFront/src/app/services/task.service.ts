@@ -6,7 +6,7 @@ export interface Task {
   id: number;
   title: string;
   description: string | null;
-  dayOfWeek: 'LUNES' | 'MARTES' | 'MIERCOLES' | 'JUEVES' | 'VIERNES' | 'SABADO' | 'DOMINGO';
+  dayOfWeek: 'LUNES' | 'MARTES' | 'MIÉRCOLES' | 'JUEVES' | 'VIERNES' | 'SÁBADO' | 'DOMINGO';
   time: string | null;
   completed: boolean;
   userId: number;
@@ -50,5 +50,13 @@ export class TaskService {
 
   getCompletedTasks(): Task[] {
     return this.tasks().filter(t => t.completed);
+  }
+
+  createTask(task: TaskCreateRequest): Observable<Task> {
+    return this.http.post<Task>(`${this.API_URL}`, task).pipe(
+      tap(newTask => {
+        this.tasks.update(tasks => [...tasks, newTask]);
+      })
+    );
   }
 }

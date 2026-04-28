@@ -1,24 +1,31 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TaskService, Task } from '../../services/task.service';
+import { TaskModalComponent } from '../../components/task-modal/task-modal';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, TaskModalComponent],
   templateUrl: './dashboard.html'
 })
 export class DashboardPage implements OnInit {
   private authService = inject(AuthService);
   private taskService = inject(TaskService);
   private router = inject(Router);
+  
+  @ViewChild('taskModalComponent') taskModal!: TaskModalComponent;
 
   isLoading = signal(false);
   error = signal<string | null>(null);
 
   ngOnInit() {
     this.loadTasks();
+  }
+  
+  openNewTaskModal() {
+    this.taskModal.show();
   }
 
   get tasks(): Task[] {

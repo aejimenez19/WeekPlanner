@@ -84,8 +84,15 @@ body {
   box-shadow: 0 12px 32px rgba(46, 52, 50, 0.04);
 }
 
-body {
-  font-family: var(--font-family-manrope);
-  background-color: var(--color-background);
-  color: var(--color-on-surface);
+.glass-overlay {
+  background: rgba(249, 249, 247, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+.signature-gradient {
+  background: linear-gradient(45deg, #4f634f, #d2e9cf);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
