@@ -3,7 +3,6 @@ package com.aejimenezdev.taskService.controller;
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
 import com.aejimenezdev.taskService.dto.UpdateTaskRequest;
-import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -26,10 +26,10 @@ public class TaskController {
     public ResponseEntity<List<TaskResponse>> getTasks(
             @RequestHeader("X-User-Id") Long userId,
             @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) DayOfWeek day) {
+            @RequestParam(required = false) LocalDate date) {
         
-        log.info("[TaskController] GET /api/tasks - Usuario: {}, day: {}, completed: {}", userId, day, completed);
-        List<TaskResponse> tasks = taskService.getTasks(userId, completed, day);
+        log.info("[TaskController] GET /api/tasks - Usuario: {}, date: {}, completed: {}", userId, date, completed);
+        List<TaskResponse> tasks = taskService.getTasks(userId, completed, date);
         return ResponseEntity.ok(tasks);
     }
 

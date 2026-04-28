@@ -1,9 +1,8 @@
 package com.aejimenezdev.taskService.dto;
 
-import com.aejimenezdev.taskService.model.DayOfWeek;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
@@ -12,7 +11,7 @@ public class UpdateTaskRequest {
 
     private String description;
 
-    private DayOfWeek dayOfWeek;
+    private LocalDate executionDate;
 
     private LocalTime time;
 

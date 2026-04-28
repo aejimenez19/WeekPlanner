@@ -3,7 +3,6 @@ package com.aejimenezdev.taskService.service;
 import com.aejimenezdev.taskService.dto.CreateTaskRequest;
 import com.aejimenezdev.taskService.dto.UpdateTaskRequest;
 import com.aejimenezdev.taskService.dto.TaskResponse;
-import com.aejimenezdev.taskService.model.DayOfWeek;
 import com.aejimenezdev.taskService.model.Task;
 import com.aejimenezdev.taskService.repository.TaskRepository;
 import com.aejimenezdev.taskService.repository.UserRepository;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +32,7 @@ public class TaskService {
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .dayOfWeek(request.getDayOfWeek())
+                .executionDate(request.getExecutionDate())
                 .time(request.getTime())
                 .completed(false)
                 .userId(userId)
@@ -46,25 +46,25 @@ public class TaskService {
                 .id(savedTask.getId())
                 .title(savedTask.getTitle())
                 .description(savedTask.getDescription())
-                .dayOfWeek(savedTask.getDayOfWeek())
+                .executionDate(savedTask.getExecutionDate())
                 .time(savedTask.getTime())
                 .completed(savedTask.getCompleted())
                 .userId(savedTask.getUserId())
                 .build();
     }
 
-    public List<TaskResponse> getTasks(Long userId, Boolean completed, DayOfWeek dayOfWeek) {
-        log.info("[TaskService] Obteniendo tareas - Usuario ID: {}, Día: {}, Completado: {}", 
-                userId, dayOfWeek, completed);
+    public List<TaskResponse> getTasks(Long userId, Boolean completed, LocalDate executionDate) {
+        log.info("[TaskService] Obteniendo tareas - Usuario ID: {}, Fecha: {}, Completado: {}", 
+                userId, executionDate, completed);
         
         List<Task> tasks;
 
-        if (completed != null && dayOfWeek != null) {
-            tasks = taskRepository.findByUserIdAndCompletedAndDayOfWeek(userId, completed, dayOfWeek);
+        if (completed != null && executionDate != null) {
+            tasks = taskRepository.findByUserIdAndCompletedAndExecutionDate(userId, completed, executionDate);
         } else if (completed != null) {
             tasks = taskRepository.findByUserIdAndCompleted(userId, completed);
-        } else if (dayOfWeek != null) {
-            tasks = taskRepository.findByUserIdAndDayOfWeek(userId, dayOfWeek);
+        } else if (executionDate != null) {
+            tasks = taskRepository.findByUserIdAndExecutionDate(userId, executionDate);
         } else {
             tasks = taskRepository.findByUserId(userId);
         }
@@ -76,7 +76,7 @@ public class TaskService {
                         .id(task.getId())
                         .title(task.getTitle())
                         .description(task.getDescription())
-                        .dayOfWeek(task.getDayOfWeek())
+                        .executionDate(task.getExecutionDate())
                         .time(task.getTime())
                         .completed(task.getCompleted())
                         .userId(task.getUserId())
@@ -104,8 +104,8 @@ public class TaskService {
         if (request.getDescription() != null) {
             task.setDescription(request.getDescription());
         }
-        if (request.getDayOfWeek() != null) {
-            task.setDayOfWeek(request.getDayOfWeek());
+        if (request.getExecutionDate() != null) {
+            task.setExecutionDate(request.getExecutionDate());
         }
         if (request.getTime() != null) {
             task.setTime(request.getTime());
@@ -122,7 +122,7 @@ public class TaskService {
                 .id(updatedTask.getId())
                 .title(updatedTask.getTitle())
                 .description(updatedTask.getDescription())
-                .dayOfWeek(updatedTask.getDayOfWeek())
+                .executionDate(updatedTask.getExecutionDate())
                 .time(updatedTask.getTime())
                 .completed(updatedTask.getCompleted())
                 .userId(updatedTask.getUserId())

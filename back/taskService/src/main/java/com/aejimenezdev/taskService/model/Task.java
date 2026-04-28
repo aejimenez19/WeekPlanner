@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -25,9 +26,7 @@ public class Task {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DayOfWeek dayOfWeek;
+    private LocalDate executionDate;
 
     private LocalTime time;
 

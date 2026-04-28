@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-Weekly planning application with task management organized by days of the week.
+Weekly planning application with task management organized by execution date (tasks can have date, time, both, or neither).
 
 ## 2. Tech Stack
 
@@ -81,8 +81,8 @@ planning/
   "id": "Long",
   "title": "String (required)",
   "description": "String",
-  "dayOfWeek": "ENUM (LUNES-DOMINGO)",
-  "time": "LocalTime",
+  "executionDate": "LocalDate (optional)",
+  "time": "LocalTime (optional)",
   "completed": "Boolean (default: false)",
   "userId": "Long (from JWT)"
 }
@@ -136,16 +136,16 @@ planning/
 
 ### Prerequisites
 - Java 21+
-- Maven 3.8+
+- Gradle 8.x
 - Docker & Docker Compose
 - Node.js 18+ (for frontend)
 
 ### Running Locally
 1. Start Docker services: `docker-compose up -d postgres`
 2. Start services in order:
-   - `mvn spring-boot:run` in auth-service
-   - `mvn spring-boot:run` in task-service
-   - `mvn spring-boot:run` in gateway
+   - `./gradlew bootRun` in auth-service
+   - `./gradlew bootRun` in task-service
+   - `./gradlew bootRun` in gateway
 3. Frontend: `ng serve` in frontend/
 
 ### Docker Compose
