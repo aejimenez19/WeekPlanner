@@ -1,0 +1,120 @@
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-10 h-20 w-full">
+  <div>
+    <h2 class="text-3xl font-bold tracking-tight text-on-background">{{ getToday() }}</h2>
+    <p class="text-on-surface-variant text-sm font-medium">Drag tasks to schedule your week</p>
+  </div>
+</header>
+
+@if (error()) {
+  <div class="bg-error-container text-error px-4 py-3 rounded-xl text-body-sm mb-6 mx-10">
+    {{ error() }}
+  </div>
+}
+
+@if (isLoading()) {
+  <div class="flex items-center justify-center py-12">
+    <span class="material-symbols-outlined text-primary animate-spin">sync</span>
+  </div>
+} @else {
+  <!-- Planning Canvas -->
+  <div class="flex-1 flex overflow-hidden p-8 pt-2 gap-8">
+    <!-- Left: Unscheduled Tasks (The Inbox) -->
+    <section class="w-1/3 flex flex-col bg-surface-container-low rounded-3xl overflow-hidden p-6 gap-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">inbox_customize</span>
+          <h3 class="text-lg font-bold text-on-surface tracking-tight">Unscheduled Inbox</h3>
+        </div>
+        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold">{{ getFilteredTasks().length }} Tasks</span>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto no-scrollbar space-y-4">
+        @for (task of getFilteredTasks(); track task.id) {
+          <div 
+            class="bg-surface-container-lowest p-5 rounded-2xl cursor-grab active:cursor-grabbing border border-transparent hover:border-primary/10 transition-all group"
+            (click)="toggleComplete(task.id, true)"
+          >
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">General</span>
+              <span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-sm">drag_indicator</span>
+            </div>
+            <h4 class="text-on-surface font-semibold mb-1">{{ task.title }}</h4>
+            @if (task.description) {
+              <p class="text-on-surface-variant text-xs leading-relaxed">{{ task.description }}</p>
+            }
+          </div>
+        }
+        
+        <div 
+          class="border-2 border-dashed border-outline-variant/20 h-24 rounded-2xl flex items-center justify-center text-outline-variant/60 cursor-pointer hover:bg-surface-container-lowest/50 transition-colors"
+          (click)="openNewTaskModal()"
+        >
+          <span class="text-sm font-medium">Add new item...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: 7-Day Weekly Grid -->
+    <section class="flex-1 flex gap-4 overflow-x-auto no-scrollbar pb-2">
+      @for (weekDay of weekDates; track weekDay.display; let i = $index) {
+        <div class="flex-shrink-0 w-64 flex flex-col bg-surface-container-low/50 rounded-3xl p-5 group" [class.bg-surface-container-high]="i === 1" [class.border-2]="i === 1" [class.border-primary]="i === 1" [class.border-opacity-20]="i === 1">
+          <div class="mb-6 text-center">
+            <span class="text-[10px] font-bold uppercase tracking-widest block mb-1" [class.text-primary]="i === 1" [class.font-bold]="i === 1">{{ weekDay.date }}</span>
+            <h4 class="text-xl font-extrabold text-on-surface">{{ weekDay.display }}</h4>
+          </div>
+          
+          <div class="flex-1 space-y-4">
+            @for (task of getTasksByDay(daysOfWeek[i]); track task.id) {
+              <div 
+                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 cursor-pointer hover:shadow-md transition-all"
+                [class.border-primary]="i !== 1 && i !== 3"
+                [class.border-secondary-dim]="i === 0 || i === 2"
+                [class.border-tertiary]="i === 3 || i === 4"
+                [class.border-secondary]="i === 5 || i === 6"
+                (click)="toggleComplete(task.id, true)"
+              >
+                @if (task.time) {
+                  <p class="text-xs font-bold mb-1" [class.text-primary]="i !== 1 && i !== 3" [class.text-secondary-dim]="i === 0 || i === 2" [class.text-tertiary]="i === 3 || i === 4" [class.text-secondary]="i === 5 || i === 6">{{ task.time }}</p>
+                }
+                <h5 class="text-sm font-semibold text-on-surface">{{ task.title }}</h5>
+              </div>
+            }
+
+            @for (task of getCompletedTasksByDay(daysOfWeek[i]); track task.id) {
+              <div 
+                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through cursor-pointer"
+                (click)="toggleComplete(task.id, false)"
+              >
+                @if (task.time) {
+                  <p class="text-xs font-bold mb-1 text-outline">{{ task.time }}</p>
+                }
+                <h5 class="text-sm font-semibold text-on-surface">{{ task.title }}</h5>
+              </div>
+            }
+
+            <div 
+              class="h-24 rounded-xl border-2 border-dashed border-outline-variant/10 flex items-center justify-center group-hover:bg-surface-container-highest/30 transition-colors cursor-pointer"
+              (click)="openNewTaskModal()"
+            >
+              <span class="material-symbols-outlined text-outline-variant/40">add_circle</span>
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+  </div>
+}
+
+<!-- FAB for Quick Actions -->
+<button 
+  class="fixed bottom-10 right-10 w-16 h-16 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 group"
+  (click)="openNewTaskModal()"
+>
+  <span class="material-symbols-outlined scale-125">auto_awesome</span>
+  <span class="absolute right-20 bg-inverse-surface text-on-inverse-surface px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+    New Entry
+  </span>
+</button>
+
+<app-task-modal #taskModalComponent></app-task-modal>

@@ -1,19 +1,15 @@
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { TaskService, Task } from '../../services/task.service';
-import { TaskModalComponent } from '../../components/task-modal/task-modal';
+import { TaskService, Task } from '../../../../services/task.service';
+import { TaskModalComponent } from '../../../../components/task-modal/task-modal';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-inbox',
   imports: [CommonModule, TaskModalComponent],
-  templateUrl: './dashboard.html'
+  templateUrl: './inbox.html'
 })
-export class DashboardPage implements OnInit {
-  private authService = inject(AuthService);
+export class InboxPage implements OnInit {
   private taskService = inject(TaskService);
-  private router = inject(Router);
   
   @ViewChild('taskModalComponent') taskModal!: TaskModalComponent;
 
@@ -68,10 +64,5 @@ export class DashboardPage implements OnInit {
         this.error.set(err.error?.message || 'Error updating task');
       }
     });
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }
