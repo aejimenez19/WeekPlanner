@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService, Task } from '../../../../services/task.service';
@@ -20,6 +20,13 @@ export class PlanPage implements OnInit {
 
   readonly daysEnglish = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   weekDates: Date[] = [];
+
+  constructor() {
+    effect(() => {
+      this.taskService.tasks();
+      this.refreshTasksByDate();
+    });
+  }
 
 
   private getWeekDates(): Date[] {
@@ -125,6 +132,9 @@ export class PlanPage implements OnInit {
 
   toggleComplete(taskId: number, completed: boolean) {
     this.taskService.toggleComplete(taskId, completed).subscribe({
+      next: () => {
+        this.refreshTasksByDate();
+      },
       error: (err) => {
         this.error.set(err.error?.message || 'Error updating task');
       }
