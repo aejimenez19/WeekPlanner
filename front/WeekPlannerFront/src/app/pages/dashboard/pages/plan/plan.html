@@ -72,29 +72,51 @@
           <div class="flex-1 space-y-4">
             @for (task of getTasksByDay(date); track task.id) {
               <div 
-                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 cursor-pointer hover:shadow-md transition-all"
+                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 hover:shadow-md transition-all flex items-start gap-2"
                 [class.border-primary]="i !== 1 && i !== 3"
                 [class.border-secondary-dim]="i === 0 || i === 2"
                 [class.border-tertiary]="i === 3 || i === 4"
                 [class.border-secondary]="i === 5 || i === 6"
-                (click)="toggleComplete(task.id, true)"
+                (click)="editTask(task)"
               >
-                @if (task.time) {
-                  <p class="text-xs font-bold mb-1" [class.text-primary]="i !== 1 && i !== 3" [class.text-secondary-dim]="i === 0 || i === 2" [class.text-tertiary]="i === 3 || i === 4" [class.text-secondary]="i === 5 || i === 6">{{ task.time }}</p>
-                }
-                <h5 class="text-sm font-semibold text-on-surface">{{ task.title }}</h5>
+                <button 
+                  class="material-symbols-outlined text-sm shrink-0 transition-colors"
+                  [class.text-primary]="i !== 1 && i !== 3"
+                  [class.text-secondary-dim]="i === 0 || i === 2"
+                  [class.text-tertiary]="i === 3 || i === 4"
+                  [class.text-secondary]="i === 5 || i === 6"
+                  [class.opacity-50]="false"
+                  [class.hover:opacity-100]="true"
+                  (click)="toggleComplete(task.id, true); $event.stopPropagation()"
+                >
+                  check_circle
+                </button>
+                <div class="flex-1 min-w-0">
+                  @if (task.time) {
+                    <p class="text-xs font-bold mb-1" [class.text-primary]="i !== 1 && i !== 3" [class.text-secondary-dim]="i === 0 || i === 2" [class.text-tertiary]="i === 3 || i === 4" [class.text-secondary]="i === 5 || i === 6">{{ task.time }}</p>
+                  }
+                  <h5 class="text-sm font-semibold text-on-surface truncate">{{ task.title }}</h5>
+                </div>
               </div>
             }
 
             @for (task of getCompletedTasksByDay(date); track task.id) {
               <div 
-                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through cursor-pointer"
-                (click)="toggleComplete(task.id, false)"
+                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through flex items-start gap-2 cursor-pointer hover:shadow-md transition-all"
+                (click)="editTask(task)"
               >
-                @if (task.time) {
-                  <p class="text-xs font-bold mb-1 text-outline">{{ task.time }}</p>
-                }
-                <h5 class="text-sm font-semibold text-on-surface">{{ task.title }}</h5>
+                <button 
+                  class="material-symbols-outlined text-sm shrink-0 text-outline hover:text-on-surface transition-colors"
+                  (click)="toggleComplete(task.id, false); $event.stopPropagation()"
+                >
+                  check_circle
+                </button>
+                <div class="flex-1 min-w-0">
+                  @if (task.time) {
+                    <p class="text-xs font-bold mb-1 text-outline">{{ task.time }}</p>
+                  }
+                  <h5 class="text-sm font-semibold text-on-surface truncate">{{ task.title }}</h5>
+                </div>
               </div>
             }
 
