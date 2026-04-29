@@ -26,11 +26,11 @@
           <span class="material-symbols-outlined text-primary">inbox_customize</span>
           <h3 class="text-lg font-bold text-on-surface tracking-tight">Unscheduled Inbox</h3>
         </div>
-        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold">{{ getFilteredTasks().length }} Tasks</span>
+        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold">{{ getUnscheduledTasks().length }} Tasks</span>
       </div>
       
       <div class="flex-1 overflow-y-auto no-scrollbar space-y-4">
-        @for (task of getFilteredTasks(); track task.id) {
+        @for (task of getUnscheduledTasks(); track task.id) {
           <div 
             class="bg-surface-container-lowest p-5 rounded-2xl cursor-grab active:cursor-grabbing border border-transparent hover:border-primary/10 transition-all group"
             (click)="toggleComplete(task.id, true)"
@@ -57,15 +57,15 @@
 
     <!-- Right: 7-Day Weekly Grid -->
     <section class="flex-1 flex gap-4 overflow-x-auto no-scrollbar pb-2">
-      @for (weekDay of weekDates; track weekDay.display; let i = $index) {
+      @for (date of weekDates; track date; let i = $index) {
         <div class="flex-shrink-0 w-64 flex flex-col bg-surface-container-low/50 rounded-3xl p-5 group" [class.bg-surface-container-high]="i === 1" [class.border-2]="i === 1" [class.border-primary]="i === 1" [class.border-opacity-20]="i === 1">
           <div class="mb-6 text-center">
-            <span class="text-[10px] font-bold uppercase tracking-widest block mb-1" [class.text-primary]="i === 1" [class.font-bold]="i === 1">{{ weekDay.date }}</span>
-            <h4 class="text-xl font-extrabold text-on-surface">{{ weekDay.display }}</h4>
+            <span class="text-[10px] font-bold uppercase tracking-widest block mb-1" [class.text-primary]="i === 1" [class.font-bold]="i === 1">{{ formatDateDisplay(date) }}</span>
+            <h4 class="text-xl font-extrabold text-on-surface">{{ daysEnglish[i] }}</h4>
           </div>
           
           <div class="flex-1 space-y-4">
-            @for (task of getTasksByDay(daysOfWeek[i]); track task.id) {
+            @for (task of getTasksByDay(date); track task.id) {
               <div 
                 class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 cursor-pointer hover:shadow-md transition-all"
                 [class.border-primary]="i !== 1 && i !== 3"
@@ -81,7 +81,7 @@
               </div>
             }
 
-            @for (task of getCompletedTasksByDay(daysOfWeek[i]); track task.id) {
+            @for (task of getCompletedTasksByDay(date); track task.id) {
               <div 
                 class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through cursor-pointer"
                 (click)="toggleComplete(task.id, false)"

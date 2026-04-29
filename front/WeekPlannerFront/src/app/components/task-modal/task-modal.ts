@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService, TaskCreateRequest } from '../../services/task.service';
 
-export type DayOfWeek = 'LUNES' | 'MARTES' | 'MIÉRCOLES' | 'JUEVES' | 'VIERNES' | 'SÁBADO' | 'DOMINGO';
-
 @Component({
   selector: 'app-task-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,13 +17,12 @@ export class TaskModalComponent {
   error = signal<string | null>(null);
 
   title = signal('');
-  dayOfWeek = signal<DayOfWeek | ''>('');
+  executionDate = signal('');
+  time = signal('');
   description = signal('');
 
-  daysOfWeek: DayOfWeek[] = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
-
   isFormValid = computed(() => {
-    return this.title().trim().length > 0 && this.dayOfWeek() !== '';
+    return this.title().trim().length > 0;
   });
 
   show() {
@@ -40,7 +37,8 @@ export class TaskModalComponent {
 
   resetForm() {
     this.title.set('');
-    this.dayOfWeek.set('');
+    this.executionDate.set('');
+    this.time.set('');
     this.description.set('');
     this.error.set(null);
   }
@@ -65,8 +63,9 @@ export class TaskModalComponent {
 
     const taskData: TaskCreateRequest = {
       title: this.title().trim(),
-      dayOfWeek: this.dayOfWeek() as DayOfWeek,
-      description: this.description().trim() || undefined
+      description: this.description().trim() || undefined,
+      executionDate: this.executionDate() || undefined,
+      time: this.time() || undefined
     };
 
     this.taskService.createTask(taskData).subscribe({

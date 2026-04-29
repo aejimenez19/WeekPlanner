@@ -67,25 +67,38 @@
           />
         </div>
 
-        <!-- Day of Week -->
-        <div class="space-y-2">
-          <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-day">DAY OF WEEK</label>
-          <div class="relative group">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary opacity-60 group-focus-within:opacity-100">calendar_view_week</span>
-            <select 
-              class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-sm font-medium focus:bg-surface-container-lowest transition-colors appearance-none cursor-pointer outline-none"
-              id="task-day"
-              [ngModel]="dayOfWeek()"
-              (ngModelChange)="dayOfWeek.set($event)"
-              name="dayOfWeek"
-              required
-            >
-              <option value="" disabled>Select a day</option>
-              @for (day of daysOfWeek; track day) {
-                <option [value]="day">{{ day }}</option>
-              }
-            </select>
-            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+        <!-- Date and Time -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Execution Date -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-date">DATE</label>
+            <div class="relative group">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary opacity-60 group-focus-within:opacity-100">calendar_today</span>
+              <input 
+                class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-sm font-medium focus:bg-surface-container-lowest transition-colors appearance-none cursor-pointer outline-none"
+                id="task-date"
+                type="date"
+                [ngModel]="executionDate()"
+                (ngModelChange)="executionDate.set($event)"
+                name="executionDate"
+              />
+            </div>
+          </div>
+
+          <!-- Time -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-time">TIME</label>
+            <div class="relative group">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary opacity-60 group-focus-within:opacity-100">schedule</span>
+              <input 
+                class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-sm font-medium focus:bg-surface-container-lowest transition-colors appearance-none cursor-pointer outline-none"
+                id="task-time"
+                type="time"
+                [ngModel]="time()"
+                (ngModelChange)="time.set($event)"
+                name="time"
+              />
+            </div>
           </div>
         </div>
 

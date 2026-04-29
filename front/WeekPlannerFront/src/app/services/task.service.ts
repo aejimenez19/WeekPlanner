@@ -6,7 +6,7 @@ export interface Task {
   id: number;
   title: string;
   description: string | null;
-  dayOfWeek: 'LUNES' | 'MARTES' | 'MIÉRCOLES' | 'JUEVES' | 'VIERNES' | 'SÁBADO' | 'DOMINGO';
+  executionDate: string | null;
   time: string | null;
   completed: boolean;
   userId: number;
@@ -15,7 +15,7 @@ export interface Task {
 export interface TaskCreateRequest {
   title: string;
   description?: string;
-  dayOfWeek: Task['dayOfWeek'];
+  executionDate?: string;
   time?: string;
 }
 

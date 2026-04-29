@@ -48,9 +48,11 @@
               <div class="flex-1">
                 <h4 class="text-lg font-semibold text-on-surface leading-tight">{{ task.title }}</h4>
                 <div class="mt-2 flex gap-3">
-                  <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">schedule</span> {{ task.dayOfWeek }}
-                  </span>
+                  @if (task.executionDate) {
+                    <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
+                      <span class="material-symbols-outlined text-xs">schedule</span> {{ task.executionDate }}
+                    </span>
+                  }
                   @if (task.time) {
                     <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
                       <span class="material-symbols-outlined text-xs">access_time</span> {{ task.time }}

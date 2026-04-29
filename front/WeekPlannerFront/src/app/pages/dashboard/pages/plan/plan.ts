@@ -18,32 +18,36 @@ export class PlanPage implements OnInit {
   error = signal<string | null>(null);
   searchQuery = signal('');
 
-  readonly daysOfWeek = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
   readonly daysEnglish = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  weekDates: Date[] = [];
 
-  private getWeekDates(): { date: string; display: string }[] {
+
+  private getWeekDates(): Date[] {
     const today = new Date();
     const currentDay = today.getDay();
     const monday = new Date(today);
     monday.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
     
-    return this.daysEnglish.map((day, index) => {
+    return Array.from({ length: 7 }, (_, i) => {
       const date = new Date(monday);
-      date.setDate(monday.getDate() + index);
-      const month = date.getMonth() + 1;
-      const dayNum = date.getDate();
-      return {
-        date: `${month < 10 ? '0' + month : month}/${dayNum < 10 ? '0' + dayNum : dayNum}`,
-        display: day
-      };
+      date.setDate(monday.getDate() + i);
+      return date;
     });
   }
 
-  get weekDates() {
-    return this.getWeekDates();
+  private dateToStr(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  formatDateDisplay(date: Date): string {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   ngOnInit() {
+    this.weekDates = this.getWeekDates();
     this.loadTasks();
   }
   
@@ -51,22 +55,46 @@ export class PlanPage implements OnInit {
     this.taskModal.show();
   }
 
-  getTasksByDay(day: string): Task[] {
-    return this.taskService.tasks().filter(t => t.dayOfWeek === day && !t.completed);
+  private tasksByDate = new Map<string, { pending: Task[]; completed: Task[] }>();
+
+  private refreshTasksByDate() {
+    this.tasksByDate.clear();
+    for (const task of this.taskService.tasks()) {
+      if (!task.executionDate) continue;
+      const dateKey = String(task.executionDate);
+      if (!this.tasksByDate.has(dateKey)) {
+        this.tasksByDate.set(dateKey, { pending: [], completed: [] });
+      }
+      const entry = this.tasksByDate.get(dateKey)!;
+      if (task.completed) {
+        entry.completed.push(task);
+      } else {
+        entry.pending.push(task);
+      }
+    }
   }
 
-  getCompletedTasksByDay(day: string): Task[] {
-    return this.taskService.tasks().filter(t => t.dayOfWeek === day && t.completed);
+  getUnscheduledTasks(): Task[] {
+    return this.taskService.tasks().filter(t => 
+      !t.executionDate && !t.time && !t.completed
+    );
   }
 
-  getPendingTasks(): Task[] {
-    return this.taskService.tasks().filter(t => !t.completed);
+  getTasksByDay(date: Date): Task[] {
+    const dateStr = this.dateToStr(date);
+    return this.tasksByDate.get(dateStr)?.pending || [];
+  }
+
+  getCompletedTasksByDay(date: Date): Task[] {
+    const dateStr = this.dateToStr(date);
+    return this.tasksByDate.get(dateStr)?.completed || [];
   }
 
   getFilteredTasks(): Task[] {
     const query = this.searchQuery().toLowerCase().trim();
-    if (!query) return this.getPendingTasks();
-    return this.getPendingTasks().filter(t => 
+    const tasks = this.getUnscheduledTasks();
+    if (!query) return tasks;
+    return tasks.filter(t => 
       t.title.toLowerCase().includes(query) ||
       t.description?.toLowerCase().includes(query)
     );
@@ -84,7 +112,10 @@ export class PlanPage implements OnInit {
   loadTasks() {
     this.isLoading.set(true);
     this.taskService.getTasks().subscribe({
-      next: () => this.isLoading.set(false),
+      next: () => {
+        this.isLoading.set(false);
+        this.refreshTasksByDate();
+      },
       error: (err) => {
         this.isLoading.set(false);
         this.error.set(err.error?.message || 'Error loading tasks');
