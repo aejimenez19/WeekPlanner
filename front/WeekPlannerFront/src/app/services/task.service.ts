@@ -20,6 +20,10 @@ export interface TaskCreateRequest {
 }
 
 export interface TaskUpdateRequest {
+  title?: string;
+  description?: string;
+  executionDate?: string;
+  time?: string;
   completed?: boolean;
 }
 
@@ -60,6 +64,16 @@ export class TaskService {
     return this.http.post<Task>(`${this.API_URL}`, task).pipe(
       tap(newTask => {
         this.tasks.update(tasks => [...tasks, newTask]);
+      })
+    );
+  }
+
+  updateTask(taskId: number, task: TaskUpdateRequest): Observable<Task> {
+    return this.http.put<Task>(`${this.API_URL}/${taskId}`, task).pipe(
+      tap(updatedTask => {
+        this.tasks.update(tasks => 
+          tasks.map(t => t.id === taskId ? updatedTask : t)
+        );
       })
     );
   }

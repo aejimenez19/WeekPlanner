@@ -32,7 +32,7 @@
       <div class="flex justify-between items-center mb-10">
         <div class="flex items-center gap-2 text-on-tertiary-fixed-variant">
           <span class="material-symbols-outlined text-sm">edit_note</span>
-          <span class="text-xs font-bold tracking-widest uppercase">New Task</span>
+          <span class="text-xs font-bold tracking-widest uppercase">{{ isEditMode() ? 'Edit Task' : 'New Task' }}</span>
         </div>
         <button 
           class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-all text-on-surface-variant cursor-pointer"
@@ -51,7 +51,7 @@
       }
 
       <!-- Form -->
-      <form class="space-y-8 flex-grow" (ngSubmit)="createTask()">
+      <form class="space-y-8 flex-grow" (ngSubmit)="saveTask()">
         <!-- Title -->
         <div class="space-y-2">
           <label class="text-xs font-bold text-on-surface-variant tracking-wider ml-1" for="task-title">TASK TITLE</label>
@@ -115,6 +115,26 @@
             name="description"
           ></textarea>
         </div>
+
+        <!-- Completed Toggle (Edit Mode Only) -->
+        @if (isEditMode()) {
+          <div class="flex items-center gap-3 pt-2">
+            <button 
+              type="button"
+              class="w-12 h-6 rounded-full transition-colors relative cursor-pointer"
+              [class.bg-primary]="completed()"
+              [class.bg-surface-container-high]="!completed()"
+              (click)="completed.set(!completed())"
+            >
+              <span 
+                class="absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-transform"
+                [class.left-7]="completed()"
+                [class.left-1]="!completed()"
+              ></span>
+            </button>
+            <span class="text-sm font-medium text-on-surface-variant">Mark as completed</span>
+          </div>
+        }
       </form>
 
       <!-- Footer Actions -->
@@ -129,13 +149,13 @@
         <div class="flex gap-3">
           <button 
             class="px-8 py-3 rounded-full signature-gradient text-on-primary text-sm font-extrabold tracking-tight shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            (click)="createTask()"
+            (click)="saveTask()"
             [disabled]="!isFormValid() || isSubmitting()"
           >
             @if (isSubmitting()) {
               <span class="material-symbols-outlined animate-spin">sync</span>
             } @else {
-              Save Task
+              {{ isEditMode() ? 'Save Changes' : 'Save Task' }}
             }
           </button>
         </div>

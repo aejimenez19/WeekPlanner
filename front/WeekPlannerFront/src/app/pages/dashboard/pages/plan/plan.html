@@ -32,12 +32,17 @@
       <div class="flex-1 overflow-y-auto no-scrollbar space-y-4">
         @for (task of getUnscheduledTasks(); track task.id) {
           <div 
-            class="bg-surface-container-lowest p-5 rounded-2xl cursor-grab active:cursor-grabbing border border-transparent hover:border-primary/10 transition-all group"
-            (click)="toggleComplete(task.id, true)"
+            class="bg-surface-container-lowest p-5 rounded-2xl cursor-pointer border border-transparent hover:border-primary/10 transition-all group"
+            (click)="editTask(task)"
           >
             <div class="flex justify-between items-start mb-2">
               <span class="text-[10px] font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">General</span>
-              <span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-sm">drag_indicator</span>
+              <button 
+                class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm"
+                (click)="toggleComplete(task.id, true); $event.stopPropagation()"
+              >
+                check_circle
+              </button>
             </div>
             <h4 class="text-on-surface font-semibold mb-1">{{ task.title }}</h4>
             @if (task.description) {

@@ -130,4 +130,8 @@ export class PlanPage implements OnInit {
       }
     });
   }
+
+  editTask(task: Task) {
+    this.taskModal.show(task);
+  }
 }
