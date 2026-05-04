@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Task {
   id: number;
@@ -32,7 +33,7 @@ export interface TaskUpdateRequest {
 })
 export class TaskService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8080/api/tasks';
+  private readonly API_URL = environment.API_URL + '/api/tasks';
 
   tasks = signal<Task[]>([]);
 

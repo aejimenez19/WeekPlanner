@@ -30,6 +30,10 @@ logs/
 .env
 .env.local
 
+# Front environment files
+front/WeekPlannerFront/src/environments/environment.ts
+front/WeekPlannerFront/src/environments/environment.prod.ts
+
 # Dev configs
 application-dev.properties
 application-dev.yml

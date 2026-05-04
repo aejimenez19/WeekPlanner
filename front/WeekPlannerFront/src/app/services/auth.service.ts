@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface RegisterRequest {
   email: string;
@@ -24,7 +25,7 @@ const TOKEN_KEY = 'auth_token';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:8080/api/auth';
+  private readonly API_URL = environment.API_URL + '/api/auth';
 
   isAuthenticated = signal(this.hasToken());
 
