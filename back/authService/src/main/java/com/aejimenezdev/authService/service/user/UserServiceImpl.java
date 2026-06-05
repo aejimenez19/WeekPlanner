@@ -1,7 +1,9 @@
 package com.aejimenezdev.authService.service.user;
 
+import com.aejimenezdev.authService.exception.UserNotFoundException;
 import com.aejimenezdev.authService.model.User;
 import com.aejimenezdev.authService.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 
     @Override
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
