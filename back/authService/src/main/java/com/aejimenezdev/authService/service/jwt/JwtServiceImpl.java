@@ -70,6 +70,10 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public boolean validateToken(String token, String username) {
-    return (extractUsername(token).equals(username) && !isTokenExpired(token));
+      try {
+          return extractUsername(token).equals(username) && !isTokenExpired(token);
+      } catch (Exception ex) {
+          return false;
+      }
   }
 }
