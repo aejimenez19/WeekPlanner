@@ -3,7 +3,7 @@ package com.aejimenezdev.authService.controller;
 import com.aejimenezdev.authService.dto.AuthResponse;
 import com.aejimenezdev.authService.dto.LoginRequest;
 import com.aejimenezdev.authService.dto.RegisterRequest;
-import com.aejimenezdev.authService.service.AuthService;
+import com.aejimenezdev.authService.service.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
