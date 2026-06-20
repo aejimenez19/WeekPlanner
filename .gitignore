@@ -1,39 +1,73 @@
-# Dependencies
+# --- Dependencies ---
 node_modules/
 package-lock.json
 
-# Build
-build/
-dist/
-.angular/
-
-# Gradle
+# --- Java / Gradle ---
 .gradle/
 build/
+out/
+bin/
+*.class
+*.jar
+*.war
+!gradle/wrapper/gradle-wrapper.jar
 
-# IDE
+# --- Angular / Node ---
+dist/
+.angular/
+/tmp
+/out-tsc
+/bazel-out
+.sass-cache/
+/coverage
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
+npm-debug.log
+yarn-error.log
+
+# --- IDE ---
 .idea/
 *.iml
-.vscode/
+*.iws
+.vscode/*
 *.swp
 *.swo
+.settings/
+.project
+.classpath
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+.history/*
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# OS
+# --- OS ---
 .DS_Store
 Thumbs.db
 
-# Logs
+# --- Logs ---
 *.log
 logs/
 
-# Env
+# --- Environment ---
 .env
 .env.local
 
-# Front environment files
-front/WeekPlannerFront/src/environments/environment.ts
-front/WeekPlannerFront/src/environments/environment.prod.ts
-
-# Dev configs
+# --- Dev configs (may contain secrets) ---
 application-dev.properties
 application-dev.yml
+
+# --- Front-end generated env files ---
+front/WeekPlannerFront/src/environments/environment.ts
+front/WeekPlannerFront/src/environments/environment.prod.ts
+__screenshots__/
+
+# --- Docker ---
+docker-compose.override.yml
