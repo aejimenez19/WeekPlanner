@@ -14,7 +14,8 @@ services:
 
   auth-service:
     build:
-      context: ./back/authService
+      context: ./back
+      dockerfile: authService/Dockerfile
     container_name: planning-auth
     expose:
       - "8080"
@@ -29,7 +30,8 @@ services:
 
   task-service:
     build:
-      context: ./back/taskService
+      context: ./back
+      dockerfile: taskService/Dockerfile
     container_name: planning-tasks
     expose:
       - "8080"
@@ -42,16 +44,28 @@ services:
 
   gateway:
     build:
-      context: ./back/gatewayservice
+      context: ./back
+      dockerfile: gatewayservice/Dockerfile
     container_name: planning-gateway
     ports:
-      - "8080:8080"
+      - "8082:8080"
     environment:
       JWT_SECRET: EstaEsUnaClaveSecretaParaJWTQueEsMuyLarga123
       JWT_EXPIRATION: 86400000
+      CORS_ALLOWED_ORIGINS: "http://localhost:4202"
     depends_on:
       - auth-service
       - task-service
+
+  front:
+    build:
+      context: ./front/WeekPlannerFront
+      dockerfile: Dockerfile
+    container_name: planning-front
+    ports:
+      - "4202:80"
+    depends_on:
+      - gateway
 
 volumes:
   postgres_data:
