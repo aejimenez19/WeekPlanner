@@ -12,7 +12,7 @@
     <div class="flex-1 overflow-y-auto">
       <div class="flex items-center justify-between mb-8">
         <h3 class="text-sm font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">Pending Tasks</h3>
-        <span class="text-xs bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-bold">{{ getPendingCount() }} Items</span>
+        <span class="text-xs bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-bold">{{ pendingCount() }} Items</span>
       </div>
 
       @if (error()) {
@@ -25,42 +25,18 @@
         <div class="flex items-center justify-center py-12">
           <span class="material-symbols-outlined text-primary animate-spin">sync</span>
         </div>
-      } @else if (getPendingTasks().length === 0) {
-        <!-- Empty State -->
-        <div class="mt-20 p-10 rounded-[2rem] bg-gradient-to-br from-primary-container/30 to-tertiary-container/30 flex flex-col items-center text-center">
-          <span class="material-symbols-outlined text-primary text-4xl mb-4">spa</span>
-          <p class="text-on-primary-container font-headline font-bold text-xl italic mb-2">"Simplicity is the ultimate sophistication."</p>
-          <p class="text-on-tertiary-fixed-variant text-sm">Leonardo da Vinci</p>
-        </div>
+      } @else if (pendingTasks().length === 0) {
+        <app-empty-state />
       } @else {
-        <!-- Task List -->
         <div class="space-y-6">
-          @for (task of getPendingTasks(); track task.id) {
-            <div 
-              class="group flex items-start gap-5 p-6 bg-surface-container-lowest rounded-xl hover:bg-white transition-all shadow-sm cursor-pointer"
-              (click)="toggleComplete(task.id, true)"
-            >
-              <div class="mt-1">
-                <div class="w-6 h-6 rounded-lg border-2 border-outline-variant/30 flex items-center justify-center group-hover:border-primary transition-colors">
-                  <span class="material-symbols-outlined text-sm text-primary opacity-0 group-hover:opacity-100">check</span>
-                </div>
-              </div>
-              <div class="flex-1">
-                <h4 class="text-lg font-semibold text-on-surface leading-tight">{{ task.title }}</h4>
-                <div class="mt-2 flex gap-3">
-                  @if (task.executionDate) {
-                    <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
-                      <span class="material-symbols-outlined text-xs">schedule</span> {{ task.executionDate }}
-                    </span>
-                  }
-                  @if (task.time) {
-                    <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
-                      <span class="material-symbols-outlined text-xs">access_time</span> {{ task.time }}
-                    </span>
-                  }
-                </div>
-              </div>
-            </div>
+          @for (task of pendingTasks(); track task.id) {
+            <app-task-card
+              variant="inbox"
+              [title]="task.title"
+              [executionDate]="task.executionDate"
+              [time]="task.time"
+              (toggle)="toggleComplete(task.id, true)"
+            />
           }
         </div>
       }
@@ -80,13 +56,13 @@
         <div class="space-y-4">
           <div class="flex justify-between items-end">
             <span class="text-sm text-on-surface-variant">Completion Rate</span>
-            <span class="text-2xl font-extrabold text-primary">{{ completionRate }}%</span>
+            <span class="text-2xl font-extrabold text-primary">{{ completionRate() }}%</span>
           </div>
           <div class="w-full bg-outline-variant/20 h-1.5 rounded-full overflow-hidden">
-            <div class="bg-primary h-full" [style.width.%]="completionRate"></div>
+            <div class="bg-primary h-full" [style.width.%]="completionRate()"></div>
           </div>
           <p class="text-xs text-on-tertiary-fixed-variant leading-relaxed">
-            @if (completionRate >= 50) {
+            @if (completionRate() >= 50) {
               You're doing great! Keep the momentum.
             } @else {
               Start completing tasks to build your momentum.

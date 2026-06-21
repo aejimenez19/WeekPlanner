@@ -31,24 +31,13 @@
       
       <div class="flex-1 overflow-y-auto no-scrollbar space-y-4">
         @for (task of getUnscheduledTasks(); track task.id) {
-          <div 
-            class="bg-surface-container-lowest p-5 rounded-2xl cursor-pointer border border-transparent hover:border-primary/10 transition-all group"
-            (click)="editTask(task)"
-          >
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">General</span>
-              <button 
-                class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm"
-                (click)="toggleComplete(task.id, true); $event.stopPropagation()"
-              >
-                check_circle
-              </button>
-            </div>
-            <h4 class="text-on-surface font-semibold mb-1">{{ task.title }}</h4>
-            @if (task.description) {
-              <p class="text-on-surface-variant text-xs leading-relaxed">{{ task.description }}</p>
-            }
-          </div>
+          <app-task-card
+            variant="unscheduled"
+            [title]="task.title"
+            [description]="task.description"
+            (edit)="editTask(task)"
+            (toggle)="toggleComplete(task.id, true)"
+          />
         }
         
         <div 
@@ -63,61 +52,32 @@
     <!-- Right: 7-Day Weekly Grid -->
     <section class="flex-1 flex gap-4 overflow-x-auto no-scrollbar pb-2">
       @for (date of weekDates; track date; let i = $index) {
-        <div class="flex-shrink-0 w-64 flex flex-col bg-surface-container-low/50 rounded-3xl p-5 group" [class.bg-surface-container-high]="i === 1" [class.border-2]="i === 1" [class.border-primary]="i === 1" [class.border-opacity-20]="i === 1">
+        <div class="flex-shrink-0 w-64 flex flex-col bg-surface-container-low/50 rounded-3xl p-5 group" [class.bg-surface-container-high]="i === todayColumnIndex()" [class.border-2]="i === todayColumnIndex()" [class.border-primary]="i === todayColumnIndex()" [class.border-opacity-20]="i === todayColumnIndex()">
           <div class="mb-6 text-center">
-            <span class="text-[10px] font-bold uppercase tracking-widest block mb-1" [class.text-primary]="i === 1" [class.font-bold]="i === 1">{{ formatDateDisplay(date) }}</span>
+            <span class="text-[10px] font-bold uppercase tracking-widest block mb-1" [class.text-primary]="i === todayColumnIndex()" [class.font-bold]="i === todayColumnIndex()">{{ formatDateDisplay(date) }}</span>
             <h4 class="text-xl font-extrabold text-on-surface">{{ daysEnglish[i] }}</h4>
           </div>
           
           <div class="flex-1 space-y-4">
             @for (task of getTasksByDay(date); track task.id) {
-              <div 
-                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 hover:shadow-md transition-all flex items-start gap-2"
-                [class.border-primary]="i !== 1 && i !== 3"
-                [class.border-secondary-dim]="i === 0 || i === 2"
-                [class.border-tertiary]="i === 3 || i === 4"
-                [class.border-secondary]="i === 5 || i === 6"
-                (click)="editTask(task)"
-              >
-                <button 
-                  class="material-symbols-outlined text-sm shrink-0 transition-colors"
-                  [class.text-primary]="i !== 1 && i !== 3"
-                  [class.text-secondary-dim]="i === 0 || i === 2"
-                  [class.text-tertiary]="i === 3 || i === 4"
-                  [class.text-secondary]="i === 5 || i === 6"
-                  [class.opacity-50]="false"
-                  [class.hover:opacity-100]="true"
-                  (click)="toggleComplete(task.id, true); $event.stopPropagation()"
-                >
-                  check_circle
-                </button>
-                <div class="flex-1 min-w-0">
-                  @if (task.time) {
-                    <p class="text-xs font-bold mb-1" [class.text-primary]="i !== 1 && i !== 3" [class.text-secondary-dim]="i === 0 || i === 2" [class.text-tertiary]="i === 3 || i === 4" [class.text-secondary]="i === 5 || i === 6">{{ task.time }}</p>
-                  }
-                  <h5 class="text-sm font-semibold text-on-surface truncate">{{ task.title }}</h5>
-                </div>
-              </div>
+              <app-task-card
+                variant="column"
+                [title]="task.title"
+                [time]="task.time"
+                [accentColor]="getAccentColor(i)"
+                (edit)="editTask(task)"
+                (toggle)="toggleComplete(task.id, true)"
+              />
             }
 
             @for (task of getCompletedTasksByDay(date); track task.id) {
-              <div 
-                class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through flex items-start gap-2 cursor-pointer hover:shadow-md transition-all"
-                (click)="editTask(task)"
-              >
-                <button 
-                  class="material-symbols-outlined text-sm shrink-0 text-outline hover:text-on-surface transition-colors"
-                  (click)="toggleComplete(task.id, false); $event.stopPropagation()"
-                >
-                  check_circle
-                </button>
-                <div class="flex-1 min-w-0">
-                  @if (task.time) {
-                    <p class="text-xs font-bold mb-1 text-outline">{{ task.time }}</p>
-                  }
-                  <h5 class="text-sm font-semibold text-on-surface truncate">{{ task.title }}</h5>
-                </div>
-              </div>
+              <app-task-card
+                variant="completed"
+                [title]="task.title"
+                [time]="task.time"
+                (edit)="editTask(task)"
+                (toggle)="toggleComplete(task.id, false)"
+              />
             }
 
             <div 

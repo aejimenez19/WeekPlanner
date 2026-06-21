@@ -1,12 +1,13 @@
-import { Component, inject, OnInit, signal, ViewChild, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService, Task } from '../../../../services/task.service';
 import { TaskModalComponent } from '../../../../components/task-modal/task-modal';
+import { TaskCardComponent } from '../../../../components/task-card/task-card';
 
 @Component({
   selector: 'app-plan',
-  imports: [CommonModule, FormsModule, TaskModalComponent],
+  imports: [CommonModule, FormsModule, TaskModalComponent, TaskCardComponent],
   templateUrl: './plan.html'
 })
 export class PlanPage implements OnInit {
@@ -21,13 +22,18 @@ export class PlanPage implements OnInit {
   readonly daysEnglish = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   weekDates: Date[] = [];
 
+  todayColumnIndex = computed(() => {
+    const today = new Date();
+    const day = today.getDay();
+    return day === 0 ? 6 : day - 1;
+  });
+
   constructor() {
     effect(() => {
       this.taskService.tasks();
       this.refreshTasksByDate();
     });
   }
-
 
   private getWeekDates(): Date[] {
     const today = new Date();
@@ -114,6 +120,12 @@ export class PlanPage implements OnInit {
   getToday(): string {
     const today = new Date();
     return today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+
+  getAccentColor(columnIndex: number): 'primary' | 'secondary' | 'tertiary' {
+    if (columnIndex === this.todayColumnIndex()) return 'primary';
+    if (columnIndex === 3 || columnIndex === 4) return 'tertiary';
+    return 'secondary';
   }
 
   loadTasks() {

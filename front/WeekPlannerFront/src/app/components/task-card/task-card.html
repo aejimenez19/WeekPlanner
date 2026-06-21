@@ -1,0 +1,97 @@
+@switch (variant()) {
+  @case ('inbox') {
+    <div
+      class="group flex items-start gap-5 p-6 bg-surface-container-lowest rounded-xl hover:bg-white transition-all shadow-sm cursor-pointer"
+      (click)="onToggle($event)"
+    >
+      <div class="mt-1">
+        <div class="w-6 h-6 rounded-lg border-2 border-outline-variant/30 flex items-center justify-center group-hover:border-primary transition-colors">
+          <span class="material-symbols-outlined text-sm text-primary opacity-0 group-hover:opacity-100">check</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-lg font-semibold text-on-surface leading-tight">{{ title() }}</h4>
+        <div class="mt-2 flex gap-3">
+          @if (executionDate()) {
+            <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">schedule</span> {{ executionDate() }}
+            </span>
+          }
+          @if (time()) {
+            <span class="text-xs text-on-tertiary-fixed-variant font-medium flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">access_time</span> {{ time() }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+  @case ('column') {
+    <div
+      class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 hover:shadow-md transition-all flex items-start gap-2 cursor-pointer"
+      [class.border-primary]="accentColor() === 'primary'"
+      [class.border-secondary]="accentColor() === 'secondary'"
+      [class.border-tertiary]="accentColor() === 'tertiary'"
+      (click)="onEdit($event)"
+    >
+      <button
+        class="material-symbols-outlined text-sm shrink-0 transition-colors hover:opacity-100 opacity-50"
+        [class.text-primary]="accentColor() === 'primary'"
+        [class.text-secondary]="accentColor() === 'secondary'"
+        [class.text-tertiary]="accentColor() === 'tertiary'"
+        (click)="onToggle($event)"
+      >
+        check_circle
+      </button>
+      <div class="flex-1 min-w-0">
+        @if (time()) {
+          <p class="text-xs font-bold mb-1"
+            [class.text-primary]="accentColor() === 'primary'"
+            [class.text-secondary]="accentColor() === 'secondary'"
+            [class.text-tertiary]="accentColor() === 'tertiary'"
+          >{{ time() }}</p>
+        }
+        <h5 class="text-sm font-semibold text-on-surface truncate">{{ title() }}</h5>
+      </div>
+    </div>
+  }
+  @case ('completed') {
+    <div
+      class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-outline-variant/30 opacity-50 line-through flex items-start gap-2 cursor-pointer hover:shadow-md transition-all"
+      (click)="onEdit($event)"
+    >
+      <button
+        class="material-symbols-outlined text-sm shrink-0 text-outline hover:text-on-surface transition-colors"
+        (click)="onToggle($event)"
+      >
+        check_circle
+      </button>
+      <div class="flex-1 min-w-0">
+        @if (time()) {
+          <p class="text-xs font-bold mb-1 text-outline">{{ time() }}</p>
+        }
+        <h5 class="text-sm font-semibold text-on-surface truncate">{{ title() }}</h5>
+      </div>
+    </div>
+  }
+  @case ('unscheduled') {
+    <div
+      class="bg-surface-container-lowest p-5 rounded-2xl cursor-pointer border border-transparent hover:border-primary/10 transition-all group"
+      (click)="onEdit($event)"
+    >
+      <div class="flex justify-between items-start mb-2">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">General</span>
+        <button
+          class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors text-sm"
+          (click)="onToggle($event)"
+        >
+          check_circle
+        </button>
+      </div>
+      <h4 class="text-on-surface font-semibold mb-1">{{ title() }}</h4>
+      @if (description()) {
+        <p class="text-on-surface-variant text-xs leading-relaxed">{{ description() }}</p>
+      }
+    </div>
+  }
+}

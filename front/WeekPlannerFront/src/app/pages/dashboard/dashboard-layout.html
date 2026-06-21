@@ -9,25 +9,10 @@
       <p class="text-xs text-on-tertiary-fixed-variant mt-1">The Digital Curator</p>
     </div>
   </div>
-  
+
   <nav class="flex-1 space-y-2">
-    <a 
-      class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-container-high rounded-xl transition-all"
-      routerLink="/dashboard/inbox"
-      routerLinkActive="bg-surface-container-high"
-      [routerLinkActiveOptions]="{exact: true}"
-    >
-      <span class="material-symbols-outlined">inbox</span>
-      <span>Inbox</span>
-    </a>
-    <a 
-      class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary font-bold rounded-xl transition-all"
-      routerLink="/dashboard/plan"
-      routerLinkActive="bg-surface-container-high text-primary"
-    >
-      <span class="material-symbols-outlined">event_repeat</span>
-      <span>Plan</span>
-    </a>
+    <!-- <app-nav-item icon="inbox" label="Inbox" route="/dashboard/inbox" [exact]="true" /> -->
+    <app-nav-item icon="event_repeat" label="Plan" route="/dashboard/plan" />
   </nav>
 
   <div class="pt-6 space-y-2 border-t border-outline-variant/10">
@@ -56,30 +41,12 @@
 
 <!-- Mobile Navigation Bar -->
 <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-dim h-20 flex items-center justify-around px-4 z-50">
-  <a 
-    class="flex flex-col items-center gap-1 text-primary"
-    routerLink="/dashboard/inbox"
-    routerLinkActive="text-primary"
-    [routerLinkActiveOptions]="{exact: true}"
-  >
-    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inbox</span>
-    <span class="text-[10px] font-bold uppercase tracking-tighter">Inbox</span>
-  </a>
-  <a 
-    class="flex flex-col items-center gap-1 text-on-surface-variant"
-    routerLink="/dashboard/plan"
-    routerLinkActive="text-primary"
-  >
-    <span class="material-symbols-outlined">event_repeat</span>
-    <span class="text-[10px] font-bold uppercase tracking-tighter">Plan</span>
-  </a>
+  <app-nav-item variant="mobile" icon="inbox" label="Inbox" route="/dashboard/inbox" [exact]="true" [filled]="true" />
+  <app-nav-item variant="mobile" icon="event_repeat" label="Plan" route="/dashboard/plan" />
   <a class="flex flex-col items-center gap-1 text-on-surface-variant" routerLink="/dashboard/inbox" fragment="new">
     <span class="material-symbols-outlined text-2xl">edit</span>
   </a>
-  <a class="flex flex-col items-center gap-1 text-on-surface-variant" routerLink="/dashboard/plan">
-    <span class="material-symbols-outlined">view_week</span>
-    <span class="text-[10px] font-bold uppercase tracking-tighter">Week</span>
-  </a>
+  <app-nav-item variant="mobile" icon="view_week" label="Week" route="/dashboard/plan" />
   <a class="flex flex-col items-center gap-1 text-on-surface-variant">
     <span class="material-symbols-outlined">folder_open</span>
     <span class="text-[10px] font-bold uppercase tracking-tighter">Files</span>
